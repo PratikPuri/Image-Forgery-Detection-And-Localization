@@ -141,25 +141,26 @@ The portion of code that does this is-
 ---
 <h3>Results and discussion</h3>
 <ol>
-<li>For the paper 1
+<li>For the paper 1 <br>
 We have written the code for training an SVM model with images corresponding to QF1 From 50 to 95 at a step of 5 and QF2 From 50 to 95 at a step of 5 for 20 iterations generating a tempered and untempered image at each iteration thus generating a total of 4000 images for training SVM and then used this Model for detecting 20 further images as forged or unforged but this requires a lot of computation power so instead we wrote code demo1.m which trains SVM with a fixed QF1 and varying QF2 with a step size of 5 from 50 to 95 and took i as 1 to train SVM(Giving 1 tampered and 1 untampered image into SVM) . Then we tried detecting the 20 images as forged or unforged and plotted the percentage of correct detections with varying Q2 keeping Q1 fixed and these were the results obtained:
 <p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/results1.jpg"></p>
 For Q1=80 and varying Q2
 <p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/results2.jpg"></p>
 For Q1 =95 and varying Q2
 <p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/results3.jpg"></p>
-For Q1=50 and varying Q2
+For Q1=50 and varying Q2<br>
 Even to perform these tasks an average of 30 mins for implementation for a i5 processor.
-Our results almost match the output given by the paper and hence we have replicated their results.
 <p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/results4.jpg"></p>
-Drawbacks The result of untampered singly compressed is given as a 0.5 probability map and does not clearly segregate this untampered image. <br>
-The result of the image given here was not detected properly and forgery of this type might go unnoticed. If a forgery is introduced at 8*8 multiple position then it might be detected but as discussed with bhaiya that has a probability of just(1/64). Also the forgery might be introduced from a doubly compressed image and then detection will be very difficult.
+Our results almost match the output given by the paper and hence we have replicated their results.<br>
+Drawbacks <br> The result of untampered singly compressed is given as a 0.5 probability map and does not clearly segregate this untampered image. <br>
+The result of the image given here was not detected properly and forgery of this type might go unnoticed. 
 <p align = "center">
-    <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks1.jpg">
-    <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks2.jpg">
+<img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks1.jpg">
+<img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks2.jpg">
+If a forgery is introduced at 8*8 multiple position then it might be detected but as discussed with bhaiya that has a probability of just(1/64). Also the forgery might be introduced from a doubly compressed image and then detection will be very difficult.
 </p>
 </li>
-<li>For the paper 2
+<li>For the paper 2<br>
 We have written the code for calculating AUC of ROC curve with images corresponding to QF1 From 50 to 100 at a step of 10 and QF2 From 50 to 100 at a step of 10 with varying the threshold form 0 to 1 at a step of 0.00001 for 20 iterations of tampered images. All images have been taken of size 1024*1024 and the central portion of size 256 × 256 is then replaced with the corresponding area from the original TIFF image.finally, the overall “manipulated” image is JPEG compressed (again with Matlab) with another given quality factor QF2. In this way, the image will result doubly compressed everywhere, except in the central region where it is supposed to be forged. Both the considered algorithms provide as output, for each analyzed image, a probability map that represents the probability of each 8 × 8 block to be forged (i.e. for each 1024 × 1024i image a 128 × 128 probability map is given). For a particular threshold we determine pfa(false alarm rate) and pd (missed detection probability) which form the basis of the ROC curve and the area under this curve is calculated. Then the mean auc is calculated for each of the 36 combinations . But this requires a lot of computation power so instead we also wrote a code as demo1.m which takes iterations for a particular Q1 and Q2 for 1 iteration of image and then AUC is calculated and ROC is plotted. We do this for 5 image and take their mean and we were able to match the results as dictated in the paper.<br>
 <h4 align = "center">AUC characteristic for different Q1 and Q2 for 5 image set</h4>
 
@@ -171,13 +172,15 @@ We have written the code for calculating AUC of ROC curve with images correspond
 |Image 4|0.58|0.998|0.994|0.546|0.691|0.9991|0.6413|0.6931|0.5007|
 |Image 5|0.6134|0.991|0.991|0.561|0.63|0.9986|0.6614|0.7034|0.5004|
 |Mean Value obtained|0.61014|0.99564|0.99428|0.55118|0.66546|0.99866|0.6694|0.69852|0.50012|
-<br>
 The tampering map example is given in the following which the highlighted yellow portion indicates forgery. 
 <p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks3.jpg"></p>
 <p align = "center">ROC curve example</p>
 <p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks4.jpg"></p>
-Advantages over Algorithm1: It even works well when QF1 > QF2 which is not in the case of algorithm 1. It does require to train a SVM but rather makes decision on the basis of the optimum threshold value which is kept near 0.52 which generates the best result.<br>
-Drawback : Also the forgery might be introduced from a doubly compressed image and then detection will be very difficult. The result of the image given here was not detected properly and forgery of this type might go unnoticed.
+Advantages over Algorithm1: <br>
+It even works well when QF1 > QF2 which is not in the case of algorithm 1. <br>
+It does require to train a SVM but rather makes decision on the basis of the optimum threshold value which is kept near 0.52 which generates the best result.<br>
+Drawback: <br> Also the forgery might be introduced from a doubly compressed image and then detection will be very difficult. 
+<br> The result of the image given here was not detected properly and forgery of this type might go unnoticed.
 <p align = "center">
     <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks5.jpg">
     <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks6.jpg">
