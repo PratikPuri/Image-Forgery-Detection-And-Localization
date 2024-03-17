@@ -162,8 +162,9 @@ The result of the image given here was not detected properly and forgery of this
 <li>For the paper 2
 We have written the code for calculating AUC of ROC curve with images corresponding to QF1 From 50 to 100 at a step of 10 and QF2 From 50 to 100 at a step of 10 with varying the threshold form 0 to 1 at a step of 0.00001 for 20 iterations of tampered images. All images have been taken of size 1024*1024 and the central portion of size 256 × 256 is then replaced with the corresponding area from the original TIFF image.finally, the overall “manipulated” image is JPEG compressed (again with Matlab) with another given quality factor QF2. In this way, the image will result doubly compressed everywhere, except in the central region where it is supposed to be forged. Both the considered algorithms provide as output, for each analyzed image, a probability map that represents the probability of each 8 × 8 block to be forged (i.e. for each 1024 × 1024i image a 128 × 128 probability map is given). For a particular threshold we determine pfa(false alarm rate) and pd (missed detection probability) which form the basis of the ROC curve and the area under this curve is calculated. Then the mean auc is calculated for each of the 36 combinations . But this requires a lot of computation power so instead we also wrote a code as demo1.m which takes iterations for a particular Q1 and Q2 for 1 iteration of image and then AUC is calculated and ROC is plotted. We do this for 5 image and take their mean and we were able to match the results as dictated in the paper.<br>
 <h4 align = "center">AUC characteristic for different Q1 and Q2 for 5 image set</h4>
-||Q1=50,Q2=50|Q1=50,Q2=80|Q1=50,Q2=100|Q1=80,Q2=50|Q1=80,Q2=80|Q1=80,Q2=100|Q1=100,Q2=50|Q1=100,Q2=80|Q1=100,Q2=100|
-||-----------|-----------|------------|-----------|-----------|------------|------------|------------|-------------|
+
+| | Q1=50,Q2=50 | Q1=50,Q2=80 | Q1=50,Q2=100 | Q1=80,Q2=50 | Q1=80,Q2=80 | Q1=80,Q2=100 | Q1=100,Q2=50 | Q1=100,Q2=80 | Q1=100,Q2=100 |
+|---|-----------|-----------|------------|-----------|-----------|------------|------------|------------|-------------|
 |Image 1|0.6173|0.9974|0.9994|0.5508|0.6851|0.9986|0.6715|0.6963|0.5004|
 |Image 2|0.63|0.9965|0.991|0.5671|0.65|0.9989|0.6814|0.7104|0.4981|
 |Image 3|0.61|0.9953|0.996|0.531|0.6712|0.9981|0.6914|0.6894|0.501|
