@@ -4,8 +4,8 @@
 <p align = "right">- Pratik Puri Goswami(16110121)<br>
 - Vasu Bhalothia (16110174)</p>
 <h3>PAPERS evaluated:</h3>
-1) Fast, automatic and fine-grained tampered JPEG image detection via DCT coefficient analysis<br>
-2) Improved DCT coefficient analysis for forgery localization in JPEG images
+1. Fast, automatic and fine-grained tampered JPEG image detection via DCT coefficient analysis<br>
+2. Improved DCT coefficient analysis for forgery localization in JPEG images
 <hr>
 <h3>Introduction</h3>
 <p>There has been a long history of image forgery. In the early days, dark-room skills were used to print multiple fragments of photos onto a single photograph paper. In the current digital era, image/video forgery becomes much easier. The techniques involve naive cutting and pasting, matting for perfect blending texture synthesis for synthesizing new contents.<br>
@@ -17,8 +17,12 @@ Active image forensic methods mainly insert digital watermark to images/videos a
 ---
 <h3>Basic outline of the Algorithm for the first paper</h3>
 
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/algorithmOutline.jpg"></p>
+
 <p>Given a JPEG image, we first dump its DCT coefficients and quantization matrices for YUV channels. If the image is originally stored in other lossless format, we first convert it to the JPEG format at the highest compression quality. Then we build histograms for each channel and each frequency. Note that the DCT coefficients are of 64 frequencies in total, varying from (0,0) to (7,7). For each frequency, the DCT coefficients of all the blocks can be gathered to build a histogram. Moreover, a color image is always converted into the YUV space for JPEG compression. Therefore, we can build at most 64 × 3 = 192 histograms of DCT coefficients of different frequencies and different channels.However, as high
 frequency DCT coefficients are often quantized to zeros, only the histograms of low frequencies of each channel are useful. For each block in the image, using one histogram we can compute one probability of it being a tampered block, by checking the DQ effect of this histogram. With all the available histograms, we can accumulate the probabilities to give the posterior probability of this block being unchanged . Then the block posterior probability map (BPPM)is thresholded to differentiate the possibly tampered region and possibly unchanged region. With such a segmentation, a four-dimensional feature vector is computed for the image. Finally, a trained SVM is applied to decide whether the image is tampered. If it is tampered, then the segmented tampered region is also output.</p>
+
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/blockPosteriorProbabilityMap.jpg"></p>
 
 ---
 <h3>Basic outline for the Algorithm for the second paper</h3>
@@ -34,13 +38,18 @@ Consequently, when an image is doubly JPEG-compressed, it will undergo the follo
 ---
 <h3>DQ effect</h3>
 
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/dqEffectDerivation1.jpg"></p>
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/dqEffectDerivation2.jpg"></p>
+
 Observation: The period is chosen as q1/gcd(q1,q2) otherwise q1/q2 is also a period but it is not an integer.
 
 ---
 <h3>Period Estimation for paper1</h3>
 Suppose s0 is the index of the bin that has the largest value. For each p between 1 and smax/20, we compute the following quantity:
 where imax = (smax − s0)/p, imin = (smin − s0)/p, smax and smin are the maximum and minimum index of the bins in the histogram, respectively, and is a parameter (can be simply chosen as 1).\
-Here we consider an example : From the figure it is quite intuitive that the H(p) when p is equal to period and hence we can confirm this postulate.
+Here we consider an example:
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/periodEstimation.jpg"></p>
+From the figure it is quite intuitive that the H(p) when p is equal to period and hence we can confirm this postulate.
 The portion of code that computes this period is given as-
 we can use the fast Fourier transform to find the peak of the spectrum of the histogram with the direct current component removed. This gives another estimate pFFT of the period p. The portion of code that computes this period is given as-
 
@@ -64,20 +73,30 @@ The portion of code that does this is:
 
 ---
 <h3>Determination of Q1</h3>
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/q1Determination.jpg"></p>
 It is interesting to note that for determination of n(x) we need Q1 which we can estimate by the following proposal made in paper. where 𝜶 is the mixture parameter and we have highlighted the dependence of both p(x) and n(x) from Q1. Based on the above model, The actual value of Q1 can be estimated as This is just the least square and the relation between 𝜶 and Q1 can be made as-
 The portion of code that does this is-
 
 ---
 <h3>Results and discussion</h3>
-1) For the paper 1 <br>
+1. For the paper 1
 We have written the code for training an SVM model with images corresponding to QF1 From 50 to 95 at a step of 5 and QF2 From 50 to 95 at a step of 5 for 20 iterations generating a tempered and untempered image at each iteration thus generating a total of 4000 images for training SVM and then used this Model for detecting 20 further images as forged or unforged but this requires a lot of computation power so instead we wrote code demo1.m which trains SVM with a fixed QF1 and varying QF2 with a step size of 5 from 50 to 95 and took i as 1 to train SVM(Giving 1 tampered and 1 untampered image into SVM) . Then we tried detecting the 20 images as forged or unforged and plotted the percentage of correct detections with varying Q2 keeping Q1 fixed and these were the results obtained:
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/results1.jpg"></p>
 For Q1=80 and varying Q2
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/results2.jpg"></p>
 For Q1 =95 and varying Q2
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/results3.jpg"></p>
 For Q1=50 and varying Q2
 Even to perform these tasks an average of 30 mins for implementation for a i5 processor.
 Our results almost match the output given by the paper and hence we have replicated their results.
-Drawbacks The result of untampered singly compressed is given as a 0.5 probability map and does not clearly segregate this untampered image. The result of the image given here was not detected properly and forgery of this type might go unnoticed. If a forgery is introduced at 8*8 multiple position then it might be detected but as discussed with bhaiya that has a probability of just(1/64). Also the forgery might be introduced from a doubly compressed image and then detection will be very difficult.
-2) For the paper 2 <br>
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/results4.jpg"></p>
+Drawbacks The result of untampered singly compressed is given as a 0.5 probability map and does not clearly segregate this untampered image. <br>
+The result of the image given here was not detected properly and forgery of this type might go unnoticed. If a forgery is introduced at 8*8 multiple position then it might be detected but as discussed with bhaiya that has a probability of just(1/64). Also the forgery might be introduced from a doubly compressed image and then detection will be very difficult.
+<p align = "center">
+    <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks1.jpg">
+    <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks2.jpg">
+</p>
+2. For the paper 2
 We have written the code for calculating AUC of ROC curve with images corresponding to QF1 From 50 to 100 at a step of 10 and QF2 From 50 to 100 at a step of 10 with varying the threshold form 0 to 1 at a step of 0.00001 for 20 iterations of tampered images. All images have been taken of size 1024*1024 and the central portion of size 256 × 256 is then replaced with the corresponding area from the original TIFF image.finally, the overall “manipulated” image is JPEG compressed (again with Matlab) with another given quality factor QF2. In this way, the image will result doubly compressed everywhere, except in the central region where it is supposed to be forged. Both the considered algorithms provide as output, for each analyzed image, a probability map that represents the probability of each 8 × 8 block to be forged (i.e. for each 1024 × 1024i image a 128 × 128 probability map is given). For a particular threshold we determine pfa(false alarm rate) and pd (missed detection probability) which form the basis of the ROC curve and the area under this curve is calculated. Then the mean auc is calculated for each of the 36 combinations . But this requires a lot of computation power so instead we also wrote a code as demo1.m which takes iterations for a particular Q1 and Q2 for 1 iteration of image and then AUC is calculated and ROC is plotted. We do this for 5 image and take their mean and we were able to match the results as dictated in the paper.
 AUC characteristic for different Q1 and Q2 for 5 image set
 Q1=50,Q
@@ -152,8 +171,23 @@ Mean Value obtained
 0.6694
 0.69852
 0.50012
-The tampering map example is given in the following which the highlighted yellow portion indicates forgery. ROC curve example
+The tampering map example is given in the following which the highlighted yellow portion indicates forgery. 
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks3.jpg"></p>
+ROC curve example
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks4.jpg"></p>
 Advantages over Algorithm1: It even works well when QF1 > QF2 which is not in the case of algorithm 1. It does require to train a SVM but rather makes decision on the basis of the optimum threshold value which is kept near 0.52 which generates the best result. Drawback : Also the forgery might be introduced from a doubly compressed image and then detection will be very difficult. The result of the image given here was not detected properly and forgery of this type might go unnoticed.
+<p align = "center">
+    <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks5.jpg">
+    <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks6.jpg">
+</p>
+
+---
 <h3>Learnings:</h3>
-1) Basis of Forgery detection.
-2) SVM method being used as a classifier. 3) Learnt about ROC and significance of AUC curve. 4) DQ effect and its significance for forgery. 5) Bayesian classifiers. 6) A prominent method for feature extraction 7) Use of gaussian kernels for removing the R/T errors. 8) Proposed DCT coefficient analysis
+1. Basis of Forgery detection.
+2. SVM method being used as a classifier. 
+3. Learnt about ROC and significance of AUC curve. 
+4. DQ effect and its significance for forgery. 
+5. Bayesian classifiers. 
+6. A prominent method for feature extraction 
+7. Use of gaussian kernels for removing the R/T errors. 
+8. Proposed DCT coefficient analysis
