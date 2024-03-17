@@ -44,7 +44,7 @@ The quantization steps for different frequencies are stored in quantization matr
 <li>The higher the compression quality is, the smaller the quantization step will be, and vice versa.</li>
 <li>The quantization step may be different for different frequencies and different channels.</li>
 </ol>
-The decoding of a JPEG image involves the inverse of the previous three steps taken in reverse order: entropy decoding, de-quantization, and inverse DCT (IDCT). Unlike the other two operations, the quantization step is not invertible.
+The decoding of a JPEG image involves the inverse of the previous three steps taken in reverse order: entropy decoding, de-quantization, and inverse DCT (IDCT). Unlike the other two operations, the quantization step is not invertible.<br>
 Consequently, when an image is doubly JPEG-compressed, it will undergo the following steps and the DCT coefficients will change accordingly: 
 <ol>
     <li>The first compression:</li>
@@ -75,36 +75,68 @@ Observation: The period is chosen as q1/gcd(q1,q2) otherwise q1/q2 is also a per
 ---
 <h3>Period Estimation for paper1</h3>
 Suppose s0 is the index of the bin that has the largest value. For each p between 1 and smax/20, we compute the following quantity:
-where imax = (smax − s0)/p, imin = (smin − s0)/p, smax and smin are the maximum and minimum index of the bins in the histogram, respectively, and is a parameter (can be simply chosen as 1).\
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/periodEstimation1.jpg"></p>
+where imax = (smax − s0)/p, imin = (smin − s0)/p, smax and smin are the maximum and minimum index of the bins in the histogram, respectively, and is a parameter (can be simply chosen as 1).<br>
 Here we consider an example:
-<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/periodEstimation.jpg"></p>
-From the figure it is quite intuitive that the H(p) when p is equal to period and hence we can confirm this postulate.
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/periodEstimation2.jpg"></p>
+From the figure it is quite intuitive that the H(p) when p is equal to period and hence we can confirm this postulate.<br>
 The portion of code that computes this period is given as-
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/periodEstimation3.jpg"></p>
 we can use the fast Fourier transform to find the peak of the spectrum of the histogram with the direct current component removed. This gives another estimate pFFT of the period p. The portion of code that computes this period is given as-
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/periodEstimation4.jpg"></p>
 
 ---
 <h3>Bayesian approach to detecting tampered blocks applicable for both papers</h3>
-From the above analysis, we see that tampered blocks and unchanged blocks have different bias in terms of contributing to the bins of a histogram h: an unchanged one favors the high peaks of h, while a tampered one tends to contribute randomly to the bins of h.Our inference is based on this key observation. Suppose a period starts from the s0-bin and ends at the (s0+p−1)th bin, then the possibility of an unchanged block which contributes to that period occurring in the (s0 + i)-bin can be estimated as Here, h(k) denotes the value of the k-th bin of the DCT coefficient histogram h. On the other hand, the possibility of a tampered block which contributes to that period appearing in the bin (s0 + i) can be estimated as
-due to its randomness of contribution. From the naive Bayesian approach, if a block contributes to the (s0 +i)-th bin, then the posterior probability of it being a tampered block or an unchanged block is, P(tampered|s0 + i) = Pt/(Pt + Pu) P(unchanged|s0 + i) = Pu/(Pt + Pu)
-The portion of code that computes this period is given as- For paper 1
+From the above analysis, we see that tampered blocks and unchanged blocks have different bias in terms of contributing to the bins of a histogram h: an unchanged one favors the high peaks of h, while a tampered one tends to contribute randomly to the bins of h.Our inference is based on this key observation.<br>
+Suppose a period starts from the s0-bin and ends at the (s0+p−1)th bin, then the possibility of an unchanged block which contributes to that period occurring in the (s0 + i)-bin can be estimated as Here, h(k) denotes the value of the k-th bin of the DCT coefficient histogram h. On the other hand, the possibility of a tampered block which contributes to that period appearing in the bin (s0 + i) can be estimated as
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/bayesianApproach1.jpg"></p>
+
+Here, h(k) denotes the value of the k-th bin of the DCT coefficient histogram h. On the other hand, the possibility of a tampered block which contributes to that period appearing in the bin (s0 + i) can be estimated as
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/bayesianApproach2.jpg"></p>
+
+due to its randomness of contribution. From the naive Bayesian approach, if a block contributes to the (s0 +i)-th bin, then the posterior probability of it being a tampered block or an unchanged block is<br>
+P(tampered|s0 + i) = Pt/(Pt + Pu)<br>
+P(unchanged|s0 + i) = Pu/(Pt + Pu)<br>
+The portion of code that computes this period is given as-<br>
+For paper 1
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/bayesianApproach3.jpg"></p>
 For paper 2
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/bayesianApproach4.jpg"></p>
 
 ---
 <h3>Feature extraction for paper 1</h3>
-If the image is tampered, we expect that tampered blocks cluster, i.e., the BPPM should be segmented into a small number of regions, where each region has a high probability of being either unchanged or tampered. While any image segmentation algorithm can be applied to the BPPM, to save computation time, we simply threshold the BPPM by choosing a threshold: where given a T, the pixels of the BPPM are classified into classes C0 and C1, respectively. in each class, respectively, and is the squared difference between the mean probabilities of the classes. With the optimal threshold, we expect that those pixels in class C0 (i.e., those having probabilities below Topt) correspond to the tampered blocks in the image.
-However, this is still insufficient for confident decision because any BPPM can be segmented in the above manner as long as its variance is nonzero. Based on the segmentation, we can extract four features: Topt and the connectivity K0 of C0. We need the connectivity of C0 as a feature because we expect that the tampered blocks cluster if they exist..
-First, the BPPM is denoised by using a medium filter. Then, for each pixel i in C0, find the number ei of pixels in class C1 in its four neighborhood. Finally, we compute K0= This definition is inspired by the perimeter–area ratio for shape description. With the four-dimensional feature vector , we can proceed to decide whether the image is tampered, by feeding the feature vector into a trained SVM. If the output is positive, then the DCT blocks that correspond to C0 of the BPPM are decided as the tampered region of the image . Corresponding code for feature extraction Corresponding code for SVM training
+If the image is tampered, we expect that tampered blocks cluster, i.e., the BPPM should be segmented into a small number of regions, where each region has a high probability of being either unchanged or tampered. While any image segmentation algorithm can be applied to the BPPM, to save computation time, we simply threshold the BPPM by choosing a threshold: 
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/featureExtraction1.jpg"></p>
+where given a T, the pixels of the BPPM are classified into classes C0 and C1, respectively. in each class, respectively, and is the squared difference between the mean probabilities of the classes. With the optimal threshold, we expect that those pixels in class C0 (i.e., those having probabilities below Topt) correspond to the tampered blocks in the image.
+However, this is still insufficient for confident decision because any BPPM can be segmented in the above manner as long as its variance is nonzero. Based on the segmentation, we can extract four features: Topt and the connectivity K0 of C0. We need the connectivity of C0 as a feature because we expect that the tampered blocks cluster if they exist.<br>
+First, the BPPM is denoised by using a medium filter. Then, for each pixel i in C0, find the number ei of pixels in class C1 in its four neighborhood. Finally, we compute K0=
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/featureExtraction2.jpg"></p>
+This definition is inspired by the perimeter–area ratio for shape description. <br>
+With the four-dimensional feature vector , we can proceed to decide whether the image is tampered, by feeding the feature vector into a trained SVM. If the output is positive, then the DCT blocks that correspond to C0 of the BPPM are decided as the tampered region of the image.<br>
+Corresponding code for feature extraction
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/featureExtraction3.jpg"></p>
+Corresponding code for SVM training
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/featureExtraction4.jpg"></p>
 
 ---
 <h3>Proposed DCT coefficient analysis for the second paper</h3>
-In the case of a tampered image, however, a histogram will actually be a mixture of p(x|H1) and p(x|H0). Hence, for large forgeries we expect the histogram of x to be a poor estimate of p(x|H1). In order to overcome this limitation, we should be able to separate the two conditional probabilities from the observed mixture. By assuming that the histogram h0(x) of the DCT coefficients before the first JPEG compression is available, a better estimate of p(x|H1) could be obtained as Unfortunately, this equation is difficult to use in practice, since it would require a reliable estimate of both h0(x) and Q1. Hence, it was proposed to introduce the following approximation The above approximation holds whenever n(x) > 0 and the histogram of the original DCT coefficient is locally uniform. In practice,it was found that for moderate values of Q2 this is usually true, except for the center bin (x = 0) of the AC coefficients, which have a Laplacian-like distribution.h ̃(x) can be viewed as the histogram of the DCT coefficients after a single compression with quantization step Q2. A simple technique for estimating h ̃(x) is to consider the DCT coefficients obtained by recompressing with the second quantization matrix a slightly cropped version of the tampered image .
+In the case of a tampered image, however, a histogram will actually be a mixture of p(x|H1) and p(x|H0). Hence, for large forgeries we expect the histogram of x to be a poor estimate of p(x|H1). In order to overcome this limitation, we should be able to separate the two conditional probabilities from the observed mixture. By assuming that the histogram h0(x) of the DCT coefficients before the first JPEG compression is available, a better estimate of p(x|H1) could be obtained as
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/proposedAnalysis1.jpg"></p>
+Unfortunately, this equation is difficult to use in practice, since it would require a reliable estimate of both h0(x) and Q1. Hence, it was proposed to introduce the following approximation 
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/proposedAnalysis2.jpg"></p>
+The above approximation holds whenever n(x) > 0 and the histogram of the original DCT coefficient is locally uniform. In practice,it was found that for moderate values of Q2 this is usually true, except for the center bin (x = 0) of the AC coefficients, which have a Laplacian-like distribution.h ̃(x) can be viewed as the histogram of the DCT coefficients after a single compression with quantization step Q2. A simple technique for estimating h ̃(x) is to consider the DCT coefficients obtained by recompressing with the second quantization matrix a slightly cropped version of the tampered image. <br>
 The portion of code that does this is:
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/proposedAnalysis3.jpg"></p>
 
 ---
 <h3>Determination of Q1</h3>
-<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/q1Determination.jpg"></p>
-It is interesting to note that for determination of n(x) we need Q1 which we can estimate by the following proposal made in paper. where 𝜶 is the mixture parameter and we have highlighted the dependence of both p(x) and n(x) from Q1. Based on the above model, The actual value of Q1 can be estimated as This is just the least square and the relation between 𝜶 and Q1 can be made as-
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/q1Determination1.jpg"></p>
+It is interesting to note that for determination of n(x) we need Q1 which we can estimate by the following proposal made in paper. where 𝜶 is the mixture parameter and we have highlighted the dependence of both p(x) and n(x) from Q1. Based on the above model, the actual value of Q1 can be estimated as 
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/q1Determination2.jpg"></p>
+This is just the least square and the relation between 𝜶 and Q1 can be made as-
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/q1Determination3.jpg"></p>
 The portion of code that does this is-
+<p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/q1Determination4.jpg"></p>
 
 ---
 <h3>Results and discussion</h3>
