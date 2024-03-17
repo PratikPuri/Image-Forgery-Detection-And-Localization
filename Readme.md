@@ -3,9 +3,11 @@
 <h3 align = "right">Team members:</h3>
 <p align = "right">- Pratik Puri Goswami(16110121)<br>
 - Vasu Bhalothia (16110174)</p>
-<h3>PAPERS evaluated:</h3>
-1. Fast, automatic and fine-grained tampered JPEG image detection via DCT coefficient analysis<br>
-2. Improved DCT coefficient analysis for forgery localization in JPEG images
+<h3>Papers evaluated:</h3>
+<ol>
+<li>Fast, automatic and fine-grained tampered JPEG image detection via DCT coefficient analysis</li>
+<li>Improved DCT coefficient analysis for forgery localization in JPEG images</li>
+</ol>
 <hr>
 <h3>Introduction</h3>
 <p>There has been a long history of image forgery. In the early days, dark-room skills were used to print multiple fragments of photos onto a single photograph paper. In the current digital era, image/video forgery becomes much easier. The techniques involve naive cutting and pasting, matting for perfect blending texture synthesis for synthesizing new contents.<br>
@@ -31,9 +33,36 @@ frequency DCT coefficients are often quantized to zeros, only the histograms of 
 
 ---
 <h3>Background</h3>
-JPEG compression The compression of JPEG images involves three basic steps: (1) DCT: An image is first divided into DCT blocks. Each block is subtracted by 128 and transformed to the YUV color space. Finally DCT is applied to each channel of the block. (2) Quantization: the DCT coefficients are divided by a quantization step and rounded to the nearest integer. (3) Entropy coding: lossless entropy coding of quantized DCT coefficients.. The quantization steps for different frequencies are stored in quantization matrices (luminance matrix for Y channel or chroma matrix for U and V channels). Two important points to be noted are- (1) The higher the compression quality is, the smaller the quantization step will be, and vice versa. (2) The quantization step may be different for different frequencies and different channels.
+JPEG compression The compression of JPEG images involves three basic steps: 
+<ol>
+<li>DCT: An image is first divided into DCT blocks. Each block is subtracted by 128 and transformed to the YUV color space. Finally DCT is applied to each channel of the block.</li>
+<li>Quantization: the DCT coefficients are divided by a quantization step and rounded to the nearest integer.</li>
+<li>Entropy coding: lossless entropy coding of quantized DCT coefficients.
+</ol>
+The quantization steps for different frequencies are stored in quantization matrices (luminance matrix for Y channel or chroma matrix for U and V channels). Two important points to be noted are- 
+<ol>
+<li>The higher the compression quality is, the smaller the quantization step will be, and vice versa.</li>
+<li>The quantization step may be different for different frequencies and different channels.</li>
+</ol>
 The decoding of a JPEG image involves the inverse of the previous three steps taken in reverse order: entropy decoding, de-quantization, and inverse DCT (IDCT). Unlike the other two operations, the quantization step is not invertible.
-Consequently, when an image is doubly JPEG-compressed, it will undergo the following steps and the DCT coefficients will change accordingly: (1) The first compression: (a) DCT (suppose after this step a coefficient value u is obtained). (b) The first quantization with quantization step Q1. (2) The first decompression: (a) Dequantization with Q1 . (b) IDCT. (3) The second compression: (a) DCT. (b) The second quantization with quantization step Q2.
+Consequently, when an image is doubly JPEG-compressed, it will undergo the following steps and the DCT coefficients will change accordingly: 
+<ol>
+    <li>The first compression:</li>
+    <ol>
+        <li>DCT (suppose after this step a coefficient value u is obtained)</li>
+        <li>The first quantization with quantization step Q1</li>
+    </ol>
+    <li>The first decompression:</li>
+    <ol>
+        <li>Dequantization with Q1 </li>
+        <li>IDCT </li>
+    </ol>
+    <li>The second compression: </li>
+    <ol>
+        <li> DCT </li>
+        <li> The second quantization with quantization step Q2</li>
+    </ol>
+</ol>
 
 ---
 <h3>DQ effect</h3>
@@ -79,7 +108,8 @@ The portion of code that does this is-
 
 ---
 <h3>Results and discussion</h3>
-1. For the paper 1
+<ol>
+<li>For the paper 1
 We have written the code for training an SVM model with images corresponding to QF1 From 50 to 95 at a step of 5 and QF2 From 50 to 95 at a step of 5 for 20 iterations generating a tempered and untempered image at each iteration thus generating a total of 4000 images for training SVM and then used this Model for detecting 20 further images as forged or unforged but this requires a lot of computation power so instead we wrote code demo1.m which trains SVM with a fixed QF1 and varying QF2 with a step size of 5 from 50 to 95 and took i as 1 to train SVM(Giving 1 tampered and 1 untampered image into SVM) . Then we tried detecting the 20 images as forged or unforged and plotted the percentage of correct detections with varying Q2 keeping Q1 fixed and these were the results obtained:
 <p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/results1.jpg"></p>
 For Q1=80 and varying Q2
@@ -96,7 +126,8 @@ The result of the image given here was not detected properly and forgery of this
     <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks1.jpg">
     <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks2.jpg">
 </p>
-2. For the paper 2
+</li>
+<li>For the paper 2
 We have written the code for calculating AUC of ROC curve with images corresponding to QF1 From 50 to 100 at a step of 10 and QF2 From 50 to 100 at a step of 10 with varying the threshold form 0 to 1 at a step of 0.00001 for 20 iterations of tampered images. All images have been taken of size 1024*1024 and the central portion of size 256 × 256 is then replaced with the corresponding area from the original TIFF image.finally, the overall “manipulated” image is JPEG compressed (again with Matlab) with another given quality factor QF2. In this way, the image will result doubly compressed everywhere, except in the central region where it is supposed to be forged. Both the considered algorithms provide as output, for each analyzed image, a probability map that represents the probability of each 8 × 8 block to be forged (i.e. for each 1024 × 1024i image a 128 × 128 probability map is given). For a particular threshold we determine pfa(false alarm rate) and pd (missed detection probability) which form the basis of the ROC curve and the area under this curve is calculated. Then the mean auc is calculated for each of the 36 combinations . But this requires a lot of computation power so instead we also wrote a code as demo1.m which takes iterations for a particular Q1 and Q2 for 1 iteration of image and then AUC is calculated and ROC is plotted. We do this for 5 image and take their mean and we were able to match the results as dictated in the paper.
 AUC characteristic for different Q1 and Q2 for 5 image set
 Q1=50,Q
@@ -180,14 +211,18 @@ Advantages over Algorithm1: It even works well when QF1 > QF2 which is not in th
     <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks5.jpg">
     <img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks6.jpg">
 </p>
+</li>
+</ol>
 
 ---
 <h3>Learnings:</h3>
-1. Basis of Forgery detection.
-2. SVM method being used as a classifier. 
-3. Learnt about ROC and significance of AUC curve. 
-4. DQ effect and its significance for forgery. 
-5. Bayesian classifiers. 
-6. A prominent method for feature extraction 
-7. Use of gaussian kernels for removing the R/T errors. 
-8. Proposed DCT coefficient analysis
+<ol>
+<li>Basis of Forgery detection.</li>
+<li>SVM method being used as a classifier. </li>
+<li>Learnt about ROC and significance of AUC curve. </li>
+<li>DQ effect and its significance for forgery. </li>
+<li>Bayesian classifiers. </li>
+<li>A prominent method for feature extraction </li>
+<li>Use of gaussian kernels for removing the R/T errors. </li>
+<li>Proposed DCT coefficient analysis</li>
+</ol>
