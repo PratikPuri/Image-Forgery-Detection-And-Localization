@@ -1,9 +1,9 @@
 <h1>Image Forgery Detection And Localization</h1>
 <p align ="right">
-Team members:<br>
+<h3 align = "right">Team members:</h3>
 - Pratik Puri Goswami(16110121)<br>
 - Vasu Bhalothia (16110174)</p>
-PAPERS Evaluated-<br>
+<h3>PAPERS evaluated:</h3>
 1) Fast, automatic and fine-grained tampered JPEG image detection via DCT coefficient analysis<br>
 2) Improved DCT coefficient analysis for forgery localization in JPEG images
 <hr>
