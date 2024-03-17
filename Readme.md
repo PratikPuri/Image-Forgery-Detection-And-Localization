@@ -1,10 +1,13 @@
-<h1>Final DIP Project</h1>
-<p align ="right">- Pratik Puri Goswami(16110121)<br>
+<h1>Image Forgery Detection And Localization</h1>
+<p align ="right">
+Team members:<br>
+- Pratik Puri Goswami(16110121)<br>
 - Vasu Bhalothia (16110174)</p>
-Assigned TA: Vinay Verma
-PAPERS Evaluated- 1) Fast, automatic and fine-grained tampered JPEG image detection via DCT coefficient analysis
+PAPERS Evaluated-<br>
+1) Fast, automatic and fine-grained tampered JPEG image detection via DCT coefficient analysis<br>
 2) Improved DCT coefficient analysis for forgery localization in JPEG images
-Introduction
+<hr>
+<h3>Introduction</h3>
 There has been a long history of image forgery. In the early days, dark-room skills were used to print multiple fragments of photos onto a single photograph paper. In the current digital era, image/video forgery becomes much easier. The techniques involve naive cutting and pasting, matting for perfect blending texture synthesis for synthesizing new contents. Image forensic technologies can be categorized as active ones and passive ones. Active image forensic methods mainly insert digital watermark to images/videos at the instant of their acquisition. The integrity of images/videos can be checked by detecting the change in the watermark. In contrast, passive image forensic aims at developing technologies for tampered image/video detection without using knowledge beyond the image/video itself.
 In the first paper, a fast and fully automatic detection method for JPEG images is proposed. The reason we target JPEG images is because JPEG is the most widely used image format. Particularly in digital cameras, JPEG may be the most preferred image format due to its efficiency of storage. Our method is based on the DQ effect. Intuitively speaking, the DQ effect is the exhibition of periodic peaks and valleys in the histograms of the discrete cosine transform, DCT, coefficients.)
 In the second paper, a proposal using a statistical test to discriminate between original and forged regions in JPEG images is made under the hypothesis that the former are doubly compressed while the latter are singly compressed. New probability models for the DCT coefficients of singly and doubly compressed regions are proposed, together with a reliable method for estimating the primary quantization factor in the case of double compression.
