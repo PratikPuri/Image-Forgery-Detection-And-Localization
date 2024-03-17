@@ -172,6 +172,7 @@ We have written the code for calculating AUC of ROC curve with images correspond
 |Image 4|0.58|0.998|0.994|0.546|0.691|0.9991|0.6413|0.6931|0.5007|
 |Image 5|0.6134|0.991|0.991|0.561|0.63|0.9986|0.6614|0.7034|0.5004|
 |Mean Value obtained|0.61014|0.99564|0.99428|0.55118|0.66546|0.99866|0.6694|0.69852|0.50012|
+
 The tampering map example is given in the following which the highlighted yellow portion indicates forgery. 
 <p align = "center"><img src = "https://github.com/PratikPuri/Image-Forgery-Detection-And-Localization/blob/feature-readme/images/drawbacks3.jpg"></p>
 <p align = "center">ROC curve example</p>
